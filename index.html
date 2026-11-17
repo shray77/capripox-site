@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Оспа овец и коз — сценарии вакцинации (EFSA 2026)</title>
+<meta name="description" content="Витрина по оценке EFSA-2026: балканская эпидемия оспы овец и коз 2024–2026, вакцины (RM-65, Romania, Bakirköy), стохастическая ядерная модель распространения и калькуляторы: ядро передачи, финальный размер вспышки, матрица стратегий, логистика кампании. Офлайн, данные не покидают браузер.">
+<meta property="og:title" content="Оспа овец и коз — сценарии вакцинации (EFSA 2026)">
+<meta property="og:description" content="Ядерная модель EFSA с MLE-параметрами Болгарии, EURL-испытания трёх штаммов, матрица стратегий «детекция × вакцинация × контроль перемещений» и логистика кампании с порогом 75%.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://shray77.github.io/capripox-site/">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://shray77.github.io/capripox-site/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐑</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./vet-ds.css">
+<script>(function(){try{if(localStorage.getItem("vetds-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}})()</script>
+<style>
+  /* Ядро — vet-ds (копия из репо экосистемы, синкер sync.py). Ниже — характер
+     витрины «КаприПокс»: терракот степи и скота + локальные алиасы, чтобы
+     вёрстка читала токены ДС, не дублируя значения. */
+  :root {
+    --ds-accent: #A14E2E; --ds-accent-strong: #8A4023; --ds-accent-ink: #FBEFE7;
+    --bg: var(--ds-bg); --surface: var(--ds-surface); --surface2: var(--ds-surface2); --border: var(--ds-border);
+    --text: var(--ds-text); --muted: var(--ds-muted); --faint: var(--ds-faint);
+    --accent: var(--ds-accent);
+    --red: var(--ds-red); --orange: var(--ds-orange); --amber: var(--ds-amber);
+    --green: var(--ds-green); --blue: var(--ds-blue); --violet: var(--ds-violet);
+    --mono: var(--ds-font-mono);
+    --accent-dim: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  [data-theme="dark"] { --ds-accent: #E08A5E; --ds-accent-strong: #EDA987; --ds-accent-ink: #2A150A; }
+  * { box-sizing: border-box; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  body { background: var(--bg); color: var(--text); font: 16px/1.6 var(--ds-font-sans); margin: 0; }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+  .ds-hub { max-width: 980px; margin: 0 auto; padding: 12px 20px 0; }
+  .ds-masthead-meta { margin-bottom: 12px; }
+  /* QA-находка №1: на 375px flex-плашка мастер-хеда не сжималась (min-width:auto)
+     и однострочная мета растягивала страницу на 119px. Канон сестёр — fade-обрезка
+     меты; здесь проще и честнее: разрешить сжатие + ellipsis (текст меты — в title). */
+  @media (max-width: 640px) {
+    .ds-masthead__side { min-width: 0; }
+    .ds-masthead__side > div { min-width: 0; }
+    .ds-masthead-meta {
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+    }
+  }
+  section.fx { margin: 26px 0 10px; }
+  section.fx > h2, article.doc h2 { font-family: var(--ds-font-display); font-weight: 400; font-size: 24px; margin: 0 0 4px; letter-spacing: -.01em; }
+  .sub { color: var(--muted); font-size: 13.5px; margin: 0 0 14px; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  article.doc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--ds-radius); padding: var(--ds-space-4) var(--ds-space-5); margin: 16px 0; }
+  article.doc p { margin: 8px 0; color: var(--muted); }
+  article.doc p b, article.doc li b { color: var(--text); }
+  article.doc ul { margin: 8px 0; padding-left: 20px; color: var(--muted); }
+  article.doc li { margin: 5px 0; }
+  .fx-formula { font: 13px/1.7 var(--mono); color: var(--text); border-left: 3px solid var(--accent);
+    background: color-mix(in srgb, var(--accent) 6%, transparent); border-radius: var(--ds-radius-s); padding: 10px 14px; margin: 10px 0; overflow-x: auto; }
+  .fx-formula small { color: var(--faint); }
+  .tbl-scroll { overflow-x: auto; }
+  table.spec { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  @media (max-width: 640px) { table.spec { font-size: 12px; } table.spec th, table.spec td { padding: 6px 4px; } }
+  table.spec th { text-align: left; color: var(--faint); font: 700 11px var(--mono); text-transform: uppercase; letter-spacing: .05em; padding: 6px 8px; border-bottom: 1px solid var(--ds-border-strong); }
+  table.spec td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--muted); }
+  table.spec tr:last-child td { border-bottom: none; }
+  table.spec .num { font: 600 12.5px var(--mono); color: var(--text); white-space: nowrap; }
+  table.spec .num em { font-style: normal; color: var(--accent); }
+  .note { font-size: 12px; color: var(--faint); margin: 6px 0 0; }
+
+  /* -- калькуляторы -------------------------------------------------------- */
+  .fx-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--ds-radius); padding: 16px 20px 18px; margin: 14px 0; }
+  .fx-card h3 { font-family: var(--ds-font-display); font-weight: 400; font-size: 19px; margin: 0 0 4px; }
+  .fx-card .sub { margin-bottom: 10px; }
+  .fx-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 18px; margin: 10px 0; }
+  .fx-field { display: block; min-width: 0; }
+  .fx-field .hint { font: 11.5px var(--mono); color: var(--faint); display: block; margin-top: 2px; }
+  label.fx-field > span:first-child { font: 600 12px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+  input[type="number"], select.fx-sel { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--ds-radius-s); background: var(--surface2); color: var(--text); font: 14px var(--mono); min-width: 0; }
+  .fx-out { font: 600 13px var(--mono); color: var(--accent); }
+  .fx-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 12px 0; }
+  .fx-stat { border: 1px solid var(--border); border-radius: var(--ds-radius-s); padding: 8px 10px; font-size: 12px; color: var(--muted); }
+  .fx-stat b { display: block; font: 600 16px var(--mono); color: var(--text); margin-top: 2px; }
+  .fx-stat b em { font-style: normal; color: var(--accent); }
+  .fx-verdict { border: 1px solid color-mix(in srgb, var(--green) 40%, transparent); background: color-mix(in srgb, var(--green) 8%, transparent);
+    border-radius: var(--ds-radius-s); padding: 12px 14px; font-size: 13.5px; color: var(--text); margin: 10px 0; }
+  .fx-verdict .tag { font: 700 10.5px var(--mono); text-transform: uppercase; letter-spacing: .06em; display: inline-block; padding: 2px 8px; border-radius: 20px; margin-bottom: 6px; }
+  .fx-verdict.ok .tag { color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 45%, transparent); }
+  .fx-verdict.na { border-color: color-mix(in srgb, var(--amber) 40%, transparent); background: color-mix(in srgb, var(--amber) 8%, transparent); }
+  .fx-verdict.na .tag { color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent); }
+  .fx-verdict .src { display: block; font: 11px var(--mono); color: var(--faint); margin-top: 6px; }
+  .fx-err { border: 1px solid color-mix(in srgb, var(--red) 40%, transparent); background: color-mix(in srgb, var(--red) 8%, transparent);
+    border-radius: var(--ds-radius-s); padding: 10px 12px; font-size: 13px; color: var(--text); margin: 10px 0; }
+  .fx-err b { color: var(--red); }
+  .fx-empty { border: 1px dashed var(--ds-border-strong); border-radius: var(--ds-radius-s);
+    padding: 14px 12px; font-size: 13px; color: var(--faint); margin: 10px 0; }
+  .cv-wrap { width: 100%; overflow-x: auto; }
+  canvas.fx-canvas { width: 100%; height: auto; display: block; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font: 11.5px var(--mono); color: var(--faint); margin: 8px 0 0; }
+  .legend i { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 5px; border-radius: 2px; }
+
+  footer { border-top: 1px solid var(--border); margin-top: var(--ds-space-7); padding: var(--ds-space-5) 0 var(--ds-space-4); }
+  .ds-footer--meta .wrap { display: flex; flex-direction: column; gap: var(--ds-space-2); }
+  .ds-footer--meta .legal { color: var(--orange); }
+
+  @media print {
+    .ds-hub, .theme-pill, .fx-controls, .legend, .ds-masthead__sub, .ds-masthead__side, .ds-masthead-meta, .ds-rule-double { display: none !important; }
+    body { font-size: 11.5px; }
+    .fx-card, article.doc { break-inside: avoid; }
+    canvas.fx-canvas { max-height: 180px; }
+  }
+</style>
+</head>
+<body>
+<nav class="ds-hub" aria-label="Экосистема">
+  <a href="https://shray77.github.io/">Визитка</a>
+  <a href="https://shray77.github.io/vetdigest-site/">Дайджест науки</a>
+  <a href="https://shray77.github.io/vetrecall-site/">Отзывы и вспышки РФ</a>
+  <a href="https://shray77.github.io/biothreat-site/">Биоугрозы мира</a>
+  <a href="https://shray77.github.io/vet-heatmap/">ВетКарта</a>
+  <a href="https://shray77.github.io/vetflu-site/">Окна риска ВПГП</a>
+  <a href="https://shray77.github.io/vetfecrt-site/">ФЭКРТ</a>
+  <a href="https://shray77.github.io/capripox-site/" class="on" aria-current="page">КаприПокс</a>
+</nav>
+
+<header class="ds-masthead">
+  <div class="wrap">
+    <div class="ds-masthead__side">
+      <div class="ds-masthead__logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4c2.5-2 6.5-2 8 .5 2-.5 3.5 1 3 3-1 3-3 5-6.5 5H10C7 12.5 5 10 5 7.5 5 5.5 7 4.5 9 5c.6-.4 1.3-.7 2-1Z"/><path d="M10 12.5V21"/><path d="M15 12.5V21"/><circle cx="13" cy="7.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="8" r=".5" fill="currentColor"/><path d="M8.5 12.2 6 19"/></svg>
+      </div>
+      <div>
+        <p class="ds-masthead-meta">Витрина экосистемы · витально важно читать с первоисточником</p>
+        <h1 class="ds-masthead__title">Оспа овец и коз: сценарии вакцинации</h1>
+        <p class="ds-masthead__sub">Оценка EFSA-2026 по балканской эпидемии 2024–2026: вакцины, ядерная модель распространения, калькуляторы</p>
+      </div>
+    </div>
+    <button class="ds-btn ds-btn--sm ds-theme-toggle ds-theme-toggle--labeled theme-pill" id="themeToggle" aria-label="Переключить тему" title="Переключить тему">
+      <svg class="ds-theme-toggle__sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4m11.4-11.4 1.4-1.4"/></svg>
+      <svg class="ds-theme-toggle__moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      <span class="ds-theme-toggle__label" aria-hidden="true"></span>
+    </button>
+  </div>
+  <div class="ds-rule-double wrap" aria-hidden="true"></div>
+</header>
+
+<main class="wrap">
+
+<section class="fx" id="summary">
+  <h2>Что случилось</h2>
+  <p class="sub">Оспа овец и коз (SPP/GTP, род <i>Capripoxvirus</i>) вернулась в Европу с беспрецедентной силой</p>
+  <article class="doc">
+    <p><b>2024–2026:</b> мажорная эпидемия в Греции и Болгарии, рассеивание в Румынию, Сербию и Северную Македонию. С 1 января 2024 по 29 января 2026 (данные ADIS): <b class="num">2081</b> вспышка в Греции и <b class="num">203</b> в Болгарии; всего за окно — <b class="num">2315</b> по пяти странам. Генетически почти идентичный штамм во всех странах; распространение восток→запад от границы Турции, где SGP циркулирует эндемично (сезонный пик зимой).</p>
+    <p><b>Почему это важно югу России:</b> disease-free статус ЕС по каприпоксам трещит; Болгария — через Чёрное море от нас. Механика переноса (движения животных, общие пастбища, стрижка, недоотчётность) — та же, что в любом эндемичном по каприпоксам регионе (Турция, Иран, Средняя Азия, Казахстан).</p>
+    <p><b>EFSA (AHAW Panel, февраль 2026)</b> оценила вакцины и смоделировала вакцинальные сценарии на данных Болгарии. Эта витрина — разбор той оценки с калькуляторами: <b>все числа ведут к первоисточнику</b>, ничего не выдумано от себя.</p>
+  </article>
+</section>
+
+<section class="fx" id="epidemic">
+  <h2>Эпидемия 2024–2026</h2>
+  <p class="sub">Данные ADIS/EU через EFSA 2026.9928 §3.2.2–3.2.3; кластеры — ST-DBSCAN (≤28 дней, ≤20 км)</p>
+  <article class="doc">
+    <div class="tbl-scroll"><table class="spec" id="tblCountries"><caption class="note" style="caption-side:bottom; text-align:left; padding-top:8px">окно: 01.01.2024–29.01.2026; Греция — мультикластерная эпидемия со средним межкластерным разлётом ~200 км (§3.2.3)</caption></table></div>
+    <ul>
+      <li><b>2024 год:</b> 340 вспышек (12 Болгария, 328 Греция); <b>пик 2025:</b> 354 вспышки/месяц в Греции, resurgence с апреля по сентябрь.</li>
+      <li><b>Болгария 2025</b> (на 05.12): 191 вспышка в 8 регионах — Пловдив 144, Хасково 16, Пазарджик 15, Стара-Загора 10; распространение ~180 км от юго-восточной границы.</li>
+      <li><b>Кластеры:</b> 10 в Греции (крупнейший 382), 6 в Болгарии (крупнейший 156), 1 в Румынии (22). Один кластер в Болгарии/Румынии — вероятная единичная интродукция; в Греции — множественные фокусы (дальние перемещения животных и/или недоотчётность).</li>
+      <li><b>Вероятные пути:</b> бесконтрольные перемещения животных (праздники, стрижка в конце мая–июне, общие пастбища/водопои, случной сезон); молоковозы и бытовые визиты не исключить.</li>
+    </ul>
+  </article>
+</section>
+
+<section class="fx" id="population">
+  <h2>Популяция и зоны</h2>
+  <p class="sub">Мелкий рогатый скот — плотность ферм и голов по странам; зоны наблюдения 10/20 км (Reg. EU 2020/687: расширены с 10 до 20 км)</p>
+  <article class="doc">
+    <div class="tbl-scroll"><table class="spec" id="tblZones"></table></div>
+    <p class="note">Таблица 4–6 оценки EFSA: численность ферм и животных, попадающих в зоны наблюдения вокруг вспышек (на 10.12.2025). Греция плотнее Болгарии в ~10 раз по головам на км² — потому и масштаб эпидемий несопоставим.</p>
+  </article>
+</section>
+
+<section class="fx" id="vaccines">
+  <h2>Вакцины</h2>
+  <p class="sub">Лит-обзор EFSA (139+113 бумаг, Elicit) + испытания EURL по каприпоксвирусам: три штамма, по две коммерческие вакцины, доза &gt;10<sup>2,5</sup> TCID₅₀</p>
+  <article class="doc">
+    <p><b>Лит-обзор:</b> живые аттенуированные вакцины — эффективность <b>80–100%</b> в большинстве исследований; иммунитет <b>≥12 мес</b> у овец, <b>до 52 мес</b> у коз; инактивированные — до 9 мес, полная защита на высоких дозах в части работ. Материнский иммунитет ягнят ~60 дней. DIVA-вакцин на рынке нет; в ЕС авторизованных вакцин нет вообще.</p>
+    <p><b>Челлендж EURL</b> (вирулентный марокканский SPPV, 10<sup>3,3</sup>–10<sup>4,95</sup> TCID₅₀ интра-дермально, 21 день — жёсткий сценарий):</p>
+    <div class="tbl-scroll"><table class="spec" id="tblEfficacy"></table></div>
+    <p class="note">Таблица 2 §3.1.2. У вакцинированных — ~1000-кратное снижение шеддинга челлендж-вируса; у части привитых Bakirköy (20%) — короткая вирусемия с нагрузкой ~в 100 раз ниже контрольной.</p>
+    <p><b>Безопасность (Таблица 1):</b> RM-65 и Romania — лихорадка &gt;41°C у 72–82% и тяжёлые местные реакции у 50–61% (предупреждать фермеров!); <b>Bakirköy</b> — лихорадка 4%, реакции 0%, но назальный шеддинг вакцинного вируса у 61% (короткий, близко к пределу детекции). Все штаммы — короткая вирусемия 1–2 дня у части животных. <b>Вывод EURL:</b> передача вакцинного вируса крайне маловероятна; держать животных на ферме 3 недели после вакцинации (до развития защиты).</p>
+    <ul>
+      <li>Все три штамма — <b>100% защита от смертности</b>; RM-65 и Romania — и от morbidity.</li>
+      <li>Bakirköy — лучший профиль безопасности, ценой лёгкой morbidity 21% при жёстком челлендже (полевые условия мягче).</li>
+      <li>Беременность: живые SPP-вакцины (RM-65) — нормальные ягнения; GTP-вакцины у беременных коз избегать (двойная доза → 37% абортов в опыте Esmaeili 2024 — стандартная доза была безопасна).</li>
+    </ul>
+  </article>
+</section>
+
+<section class="fx" id="model">
+  <h2>Модель EFSA</h2>
+  <p class="sub">Стохастическая пространственно-ядровая модель на уровне ферм, S-I-R-V внутри фермы; калибровка MLE по вспышкам Болгарии после 29.06.2025 в радиусе 50 км</p>
+  <article class="doc">
+    <p>Сила инфекции фермы <i>j</i> от всех инфицированных ферм <i>k</i>:</p>
+    <div class="fx-formula">λ<sub>j</sub>(t) = h · S<sub>j</sub>(t) · Σ<sub>k≠j</sub> I<sub>k</sub>(t) · K(x<sub>jk</sub>),&nbsp;&nbsp;&nbsp;K(x) = (1 + x/d₀)<sup>−α</sup></div>
+    <p>Параметры (MLE, Болгария): <b class="num">h = 4,73·10⁻⁶</b>, <b class="num">d₀ = 1,25 км</b>, <b class="num">α = 2,79</b>. Внутри фермы динамика не моделируется: число заболевших — биномиальная выборка с финальным размером <i>f</i> из уравнения 1 − f − exp(−f·R₀) = 0. Ферма инфекционна длительность вспышки:</p>
+    <ul>
+      <li><b class="num">15 дней</b> — быстрая детекция и зачистка (инкубация 10 д + 5 д от репорта до зачистки);</li>
+      <li><b class="num">30 дней</b> — нормальная (25 д = 2–3 инкубационных периода + 5 д);</li>
+      <li><b class="num">60 дней</b> — без зачистки (средняя длительность внутристадной вспышки).</li>
+    </ul>
+    <p><b>Вакцинация в модели:</b> VE 95%, все животные фермы, иммунитет 1 год (остановка кампании — восприимчивость возвращается), старт на 90-й день после интродукции, завершение за 60 дней (темп по оценке болгарской службы), ежегодная замена поголовья 20%. Охват: 4 региона (Пловдив, Хасково, Стара-Загора, Пазарджик) или вся страна; жёсткий контроль перемещений моделировался отсечением передачи за 20 км от инфицированной фермы.</p>
+    <p><b>Греция:</b> ядро оценить не удалось (мультикластерность, горы и острова ломают дистанционные ядра) — выводы по Греции описательные; болгарские применимы «как минимум». В статье: приоритет — затронутые регионы (~9,9 млн голов), наступать с запада, чтобы остановить фронт; соседним странам (Румыния, Сев. Македония, Албания, Сербия) — рассмотреть превентивную вакцинацию до следующего сезона.</p>
+  </article>
+</section>
+
+<section class="fx" id="calc">
+  <h2>Калькуляторы</h2>
+  <p class="sub">Математика статьи в ваших руках: ядро, финальный размер, матрица стратегий, логистика кампании. Всё считается в браузере</p>
+
+  <div class="fx-card" id="calcKernel">
+    <h3>Ядро передачи</h3>
+    <p class="sub">K(x) — относительный риск передачи на расстоянии x от инфицированной фермы. Подвиньте параметры — увидите, почему зоны наблюдения именно 10 и 20 км</p>
+    <div class="fx-controls">
+      <label class="fx-field"><span>Масштаб ядра d₀, км</span>
+        <input type="range" id="kD0" min="0.5" max="3" step="0.05" value="1.25">
+        <output class="fx-out" id="kD0o">1.25</output>
+        <span class="hint">EFSA (MLE): 1,25 км</span></label>
+      <label class="fx-field"><span>Степень спада α</span>
+        <input type="range" id="kA" min="2.1" max="3.5" step="0.01" value="2.79">
+        <output class="fx-out" id="kAo">2.79</output>
+        <span class="hint">EFSA (MLE): 2,79</span></label>
+      <div class="fx-field"><span style="font:600 12px var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:.04em">Сброс</span>
+        <button class="ds-btn ds-btn--sm" id="kReset" style="margin-top:4px">параметры EFSA</button></div>
+    </div>
+    <div class="cv-wrap"><canvas class="fx-canvas" id="kCanvas" width="1400" height="360"></canvas></div>
+    <div class="legend">
+      <span><i style="background:var(--accent)"></i>K(x) — риск относительно контакта «рядом» (лог-шкала)</span>
+      <span>пунктир — 10 и 20 км (зоны наблюдения)</span>
+    </div>
+    <div class="tbl-scroll"><table class="spec" id="tblRings"></table></div>
+    <p class="note">Доли колец — при допущении равномерной плотности ферм вокруг вспышки; MLE-оценка EFSA исключала прыжки &gt;50 км. Это геометрия ядра, а не прогноз «сколько заражений случится в кольце»: реальные плотности, движения животных и рельеф её искажают. Именно поэтому у EFSA Греция не смоделирована вовсе.</p>
+  </div>
+
+  <div class="fx-card" id="calcFinal">
+    <h3>Финальный размер вспышки в стаде</h3>
+    <p class="sub">Уравнение статьи: 1 − f − exp(−f·R₀) = 0 — какая доля стада переболеет при заносе. R₀ статьи не задан — подбирайте под своё стадо</p>
+    <div class="fx-controls">
+      <label class="fx-field"><span>Внутристадный R₀</span>
+        <input type="range" id="fR0" min="1.05" max="20" step="0.05" value="5">
+        <output class="fx-out" id="fR0o">5.0</output>
+        <span class="hint">результат решается бисекцией, как в модели</span></label>
+    </div>
+    <div class="fx-stats">
+      <div class="fx-stat">переболеет стада<b><em id="fPct">—</em></b></div>
+      <div class="fx-stat">на 1000 голов заболеет<b id="fHead">—</b></div>
+      <div class="fx-stat">при R₀ → 1 вспышка гаснет<b id="fEdge">R₀ ≤ 1 — нет эпидемии</b></div>
+    </div>
+    <p class="note">Модель EFSA рисует I биномиальной выборкой из S с этой вероятностью; «стадо инфекционно» до зачистки (15/30/60 дней — сценарии детекции). Для заноса в чувствительное поголовье без вакцинации морбидность до 100% и смертность до 72% — цифры лит-обзора.</p>
+  </div>
+
+  <div class="fx-card" id="calcMatrix">
+    <h3>Матрица стратегий</h3>
+    <p class="sub">Три рычага из статьи: скорость детекции-зачистки, охват вакцинации, контроль перемещений. Немоделированные сочетания помечены честно</p>
+    <div class="fx-controls">
+      <label class="fx-field"><span>Детекция + зачистка</span>
+        <select class="fx-sel" id="mDet">
+          <option value="15">15 дней — быстрая</option>
+          <option value="30" selected>30 дней — нормальная</option>
+          <option value="60">60 дней — без зачистки</option>
+        </select></label>
+      <label class="fx-field"><span>Вакцинация</span>
+        <select class="fx-sel" id="mVac">
+          <option value="none" selected>нет</option>
+          <option value="regions4">4 региона</option>
+          <option value="country">вся страна</option>
+        </select></label>
+      <label class="fx-field"><span>Контроль перемещений</span>
+        <select class="fx-sel" id="mCtrl">
+          <option value="" selected>обычный</option>
+          <option value="20km">жёсткий 20-км</option>
+        </select></label>
+    </div>
+    <div id="mOut"></div>
+  </div>
+
+  <div class="fx-card" id="calcLog">
+    <h3>Логистика кампании</h3>
+    <p class="sub">Дозы, защищённая доля и порог EFSA-2014 (75% защищённых) для типовых зон статьи — или для своего поголовья</p>
+    <div class="fx-controls">
+      <label class="fx-field"><span>Регион кампании</span>
+        <select class="fx-sel" id="lZone"></select>
+        <span class="hint" id="lZoneSrc">источник: Table 5</span></label>
+      <label class="fx-field"><span>Голов (своё значение)</span>
+        <input type="number" id="lHeads" inputmode="numeric" placeholder="258 953">
+        <span class="hint">заполните, чтобы переопределить пресет</span></label>
+      <label class="fx-field"><span>Покрытие вакцинацией</span>
+        <input type="range" id="lCov" min="0.5" max="1" step="0.01" value="0.8">
+        <output class="fx-out" id="lCovO">80%</output>
+        <span class="hint">VE фиксирована моделью EFSA: 95%</span></label>
+    </div>
+    <div id="lOut"></div>
+  </div>
+</section>
+
+<section class="fx" id="sources">
+  <h2>Источники</h2>
+  <p class="sub">Витрина — пересказ с калькуляторами; цитируйте первоисточники, а не её</p>
+  <article class="doc">
+    <div class="tbl-scroll"><table class="spec" id="tblSources"></table></div>
+    <p class="note">Пресс-контекст эпидемии: beaconbio (1759 вспышек 01.07.2025–08.02.2026, Греция 1549), UK APHA POA (декабрь 2025), AGES. Правовая рамка ЕС: Reg. (EU) 2016/429 + 2020/687. В РФ оспа овец и коз — карантинная болезнь из перечня ВТО; при подозрении — обязательное извещение госветслужбы, карантин и мероприятия по правилам, вакцинация — по решению уполномоченных органов. Витрина не заменяет ни то, ни другое.</p>
+  </article>
+</section>
+
+</main>
+
+<footer class="ds-footer--meta">
+  <div class="wrap">
+    <span class="legal">разбор научной оценки · не ветеринарная консультация и не руководство к действию · <a href="./terms.html">условия и дисклеймер</a></span>
+    <span>v1.0 · данные: EFSA Journal 2026;24(6):e9928 (DOI 10.2903/j.efsa.2026.9928) + WOAH RR-Europe 2026 · гейт known-answers в CI на каждый пуш</span>
+    <a href="https://github.com/shray77/capripox-site">репозиторий</a>
+  </div>
+</footer>
+
+<script type="module">
+import { KERNEL_BG, kernelK, ringShare, kernelProfile, finalSize, minCoverage,
+         campaign, scenarioVerdict, EPIDEMIC, POPULATION, VACCINES, SOURCES,
+         parseHeads } from './capripox.js';
+
+const $ = (id) => document.getElementById(id);
+const fmt = (x, d = 0) => Number(x).toLocaleString('ru-RU', { maximumFractionDigits: d, minimumFractionDigits: d });
+const pct = (x, d = 1) => (100 * x).toLocaleString('ru-RU', { maximumFractionDigits: d }) + '%';
+
+/* ---------- таблицы данных ---------- */
+$('tblCountries').innerHTML =
+  '<tr><th>Страна</th><th>Вспышек</th><th>Контекст</th></tr>' +
+  EPIDEMIC.countries.map((c) =>
+    `<tr><td><b>${c.c}</b></td><td class="num">${fmt(c.outbreaks)}</td><td>${c.note}</td></tr>`).join('');
+
+$('tblZones').innerHTML =
+  '<tr><th>Зона / регион</th><th>Ферм</th><th>Голов</th><th>Источник</th></tr>' +
+  POPULATION.zones.map((z) =>
+    `<tr><td>${z.label}</td><td class="num">${z.farms == null ? '—' : fmt(z.farms)}</td><td class="num">${fmt(z.heads)}</td><td class="note">${z.src}</td></tr>`).join('') +
+  `<tr><td><b>Греция, вся страна</b></td><td class="num">${fmt(POPULATION.greece.farms)}</td><td class="num">${fmt(POPULATION.greece.heads)}</td><td class="note">§3.2.1: 129 голов/км², 0,64 фермы/км²</td></tr>` +
+  `<tr><td><b>Болгария, вся страна</b></td><td class="num">${fmt(POPULATION.bulgaria.farms)}</td><td class="num">${fmt(POPULATION.bulgaria.heads)}</td><td class="note">§3.2.1: 13 голов/км², 0,22 фермы/км²</td></tr>`;
+
+$('tblEfficacy').innerHTML =
+  '<tr><th>' + VACCINES.eurlEfficacy.head.join('</th><th>') + '</th></tr>' +
+  VACCINES.eurlEfficacy.rows.map((r) =>
+    `<tr><td><b>${r[0]}</b></td>${r.slice(1).map((c) => `<td class="num">${c}</td>`).join('')}</tr>`).join('');
+
+$('tblSources').innerHTML =
+  '<tr><th>Источник</th><th>Статус</th></tr>' +
+  SOURCES.map((s) => `<tr><td>${s.t} — <a href="${s.u}" target="_blank" rel="noopener">${s.u.replace(/^https?:\/\//, '').slice(0, 60)}…</a></td><td class="note">${s.tag}</td></tr>`).join('');
+
+/* ---------- калькулятор 1: ядро ---------- */
+const kD0 = $('kD0'), kA = $('kA');
+function drawKernel() {
+  const d0 = Number(kD0.value), a = Number(kA.value);
+  $('kD0o').textContent = d0.toFixed(2);
+  $('kAo').textContent = a.toFixed(2);
+  const cv = $('kCanvas');
+  const DPR = window.devicePixelRatio || 1;
+  const W = 700, H = 180, pad = { l: 46, r: 14, t: 12, b: 26 };
+  cv.width = W * DPR; cv.height = H * DPR;
+  cv.style.aspectRatio = `${W} / ${H}`;
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+  const css = getComputedStyle(document.documentElement);
+  const C = { text: css.getPropertyValue('--ds-text').trim() || '#333',
+              muted: css.getPropertyValue('--ds-muted').trim() || '#888',
+              faint: css.getPropertyValue('--ds-faint').trim() || '#aaa',
+              border: css.getPropertyValue('--ds-border').trim() || '#ccc',
+              accent: css.getPropertyValue('--ds-accent').trim() || '#A14E2E' };
+  const XMAX = 60;
+  const x = (v) => pad.l + (v / XMAX) * (W - pad.l - pad.r);
+  const logv = (v) => Math.log10(Math.max(v, 1e-7));
+  const LMIN = -6, LMAX = 0;
+  const y = (v) => H - pad.b - ((logv(v) - LMIN) / (LMAX - LMIN)) * (H - pad.t - pad.b);
+  // сетка: декады
+  ctx.font = '10px "IBM Plex Mono", monospace';
+  ctx.textAlign = 'right';
+  for (let e = 0; e >= -6; e -= 2) {
+    const yy = y(Math.pow(10, e));
+    ctx.strokeStyle = C.border; ctx.globalAlpha = .5;
+    ctx.beginPath(); ctx.moveTo(pad.l, yy); ctx.lineTo(W - pad.r, yy); ctx.stroke();
+    ctx.globalAlpha = 1; ctx.fillStyle = C.faint;
+    ctx.fillText('1e' + e, pad.l - 6, yy + 3);
+  }
+  ctx.textAlign = 'center';
+  for (const gx of [0, 10, 20, 30, 40, 50, 60]) {
+    ctx.fillStyle = C.faint;
+    ctx.fillText(String(gx), x(gx), H - 8);
+  }
+  // зоны 10/20 км
+  ctx.setLineDash([4, 4]);
+  for (const z of [10, 20]) {
+    ctx.strokeStyle = C.muted; ctx.globalAlpha = .6;
+    ctx.beginPath(); ctx.moveTo(x(z), pad.t); ctx.lineTo(x(z), H - pad.b); ctx.stroke();
+  }
+  ctx.setLineDash([]); ctx.globalAlpha = 1;
+  // кривая
+  ctx.strokeStyle = C.accent; ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let px = 0; px <= XMAX * 4; px++) {
+    const xv = px / 4;
+    const k = kernelK(xv, { d0, alpha: a });
+    const xx = x(xv), yy = y(k);
+    if (px === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+  }
+  ctx.stroke();
+  // подписи зон
+  ctx.fillStyle = C.muted; ctx.font = '10px "IBM Plex Mono", monospace'; ctx.textAlign = 'left';
+  ctx.fillText('10 км', x(10) + 4, pad.t + 8);
+  ctx.fillText('20 км', x(20) + 4, pad.t + 8);
+  // таблица колец
+  const prof = kernelProfile([3, 10, 20, 50], { d0, alpha: a });
+  $('tblRings').innerHTML =
+    '<tr><th>Радиус</th><th>Риск K(x) от «рядом»</th><th>Доля силы инфекции в кольце*</th></tr>' +
+    prof.map((p) => `<tr><td class="num"><em>${p.r} км</em></td><td class="num">${p.K.toExponential(2).replace('.', ',').replace('e', '·10^')}</td><td class="num">${pct(p.share)}</td></tr>`).join('');
+}
+kD0.addEventListener('input', drawKernel);
+kA.addEventListener('input', drawKernel);
+$('kReset').addEventListener('click', () => { kD0.value = '1.25'; kA.value = '2.79'; drawKernel(); });
+
+/* ---------- калькулятор 2: финальный размер ---------- */
+function drawFinal() {
+  const R0 = Number($('fR0').value);
+  $('fR0o').textContent = R0.toFixed(2).replace('.', ',');
+  const f = finalSize(R0);
+  $('fPct').textContent = pct(f);
+  $('fHead').textContent = fmt(Math.round(1000 * f));
+  $('fEdge').textContent = 'R₀ ≤ 1 — нет эпидемии';
+}
+$('fR0').addEventListener('input', drawFinal);
+
+/* ---------- калькулятор 3: матрица стратегий ---------- */
+function drawMatrix() {
+  const det = Number($('mDet').value), vac = $('mVac').value, ctrl = $('mCtrl').value;
+  const r = scenarioVerdict(det, vac, ctrl);
+  const box = $('mOut');
+  if (!r) { box.innerHTML = '<div class="fx-err"><b>Ошибка:</b> сочетание не распознано.</div>'; return; }
+  box.innerHTML = r.modeled
+    ? `<div class="fx-verdict ok"><span class="tag">вывод EFSA</span>${r.verdict}<span class="src">источник: EFSA 2026.9928, ${r.src}</span></div>`
+    : `<div class="fx-verdict na"><span class="tag">не моделировалось</span>${r.verdict}<span class="src">источник: EFSA 2026.9928, ${r.src}</span></div>`;
+}
+for (const id of ['mDet', 'mVac', 'mCtrl']) $(id).addEventListener('change', drawMatrix);
+
+/* ---------- калькулятор 4: логистика ---------- */
+const lZone = $('lZone'), lHeads = $('lHeads'), lCov = $('lCov');
+lZone.innerHTML = POPULATION.zones.map((z) =>
+  `<option value="${z.id}">${z.label} — ${fmt(z.heads)} гол.${z.farms != null ? ', ' + fmt(z.farms) + ' ферм' : ''}</option>`).join('') +
+  '<option value="custom"> своё поголовье</option>';
+function drawLog() {
+  const cov = Number(lCov.value);
+  $('lCovO').textContent = Math.round(cov * 100) + '%';
+  const box = $('lOut');
+  const zone = POPULATION.zones.find((z) => z.id === lZone.value);
+  const custom = lHeads.value.trim() !== '' || lZone.value === 'custom';
+  let heads = zone ? zone.heads : null;
+  let farms = zone ? zone.farms : null;
+  if (custom) {
+    const p = parseHeads(lHeads.value);
+    if (!p.ok) {
+      box.innerHTML = `<div class="fx-err"><b>Поголовье:</b> «${(p.bad || ['?'])[0]}» — не разобрать. Число голов, можно с пробелами-разделителями.</div>`;
+      return;
+    }
+    heads = p.value;
+  }
+  if (heads != null && heads > 0) {
+    const r = campaign({ heads, coverage: cov, ve: 0.95, farms });
+    const min75 = minCoverage(0.75, 0.95);
+    box.innerHTML =
+      (custom ? '' : `<p class="note">пресет: ${zone.label} (${zone.src})${custom ? '' : ''}</p>`) +
+      `<div class="fx-stats">
+        <div class="fx-stat">доз (первичный курс)<b>${fmt(r.doses)}</b></div>
+        <div class="fx-stat">защищённая доля стада<b><em>${pct(r.protectedShare)}</em></b></div>
+        <div class="fx-stat">защищённых голов<b>${fmt(r.protectedHeads)}</b></div>
+        ${r.farmsToVaccinate != null ? `<div class="fx-stat">ферм под вакцинацию<b>${fmt(r.farmsToVaccinate)}</b></div>` : ''}
+      </div>` +
+      (r.hit75
+        ? `<div class="fx-verdict ok"><span class="tag">порог EFSA-2014</span>Покрытие ${Math.round(cov * 100)}% при VE 95% даёт ${pct(r.protectedShare)} защищённых — порог 75% (эффективный контроль вспышек по EFSA AHAW 2014) достигнут.<span class="src">минимальное покрытие при VE 95%: ${pct(min75)}</span></div>`
+        : `<div class="fx-verdict na"><span class="tag">порог EFSA-2014 не достигнут</span>Покрытие ${Math.round(cov * 100)}% даёт только ${pct(r.protectedShare)} защищённых. Для порога 75% нужно покрытие ${pct(min75)} при VE 95% — потери на несовершенную эффективность вакцины.<span class="src">EFSA AHAW 2014: контроль эффективен при покрытии ≥75%, поддерживаемом постоянно</span></div>`) +
+      `<p class="note">Допущения модели EFSA: 1 доза на голову (живая аттенуированная), иммунитет 1 год → поддерживающая ревакцинация ежегодно тем же объёмом; старт кампании +90 дней после интродукции, разгон 60 дней. Лит-обзор EFSA: у коз живые вакцины защищают до 52 мес — реальная поддерживающая кампания может быть реже, но модель консервативна. Замена поголовья 20%/год добавляет восприимчивых между ревакцинациями.</p>`;
+  } else {
+    box.innerHTML = '<div class="fx-empty">Выберите пресет региона или введите поголовье.</div>';
+  }
+}
+lZone.addEventListener('change', () => {
+  if (lZone.value !== 'custom') { lHeads.value = ''; }
+  drawLog();
+});
+lHeads.addEventListener('input', drawLog);
+lCov.addEventListener('input', drawLog);
+
+/* ---------- тема + первый рендер ---------- */
+(function(){
+  var root = document.documentElement, key = "vetds-theme";
+  var btn = document.getElementById("themeToggle");
+  if (btn) btn.addEventListener("click", function(){
+    var dark = root.getAttribute("data-theme") === "dark";
+    if (dark) root.removeAttribute("data-theme"); else root.setAttribute("data-theme", "dark");
+    try { localStorage.setItem(key, dark ? "" : "dark"); } catch (e) {}
+    drawKernel(); // перерисовать канвас в цветах новой темы
+  });
+})();
+window.addEventListener('vetds-theme', drawKernel);
+window.addEventListener('resize', drawKernel);
+
+drawKernel(); drawFinal(); drawMatrix(); drawLog();
+</script>
+</body>
+</html>
