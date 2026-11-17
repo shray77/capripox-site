@@ -95,6 +95,15 @@
   .fx-verdict.na { border-color: color-mix(in srgb, var(--amber) 40%, transparent); background: color-mix(in srgb, var(--amber) 8%, transparent); }
   .fx-verdict.na .tag { color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent); }
   .fx-verdict .src { display: block; font: 11px var(--mono); color: var(--faint); margin-top: 6px; }
+
+  /* Тоггл описания «Что случилось» (просьба юзера 17.11: не всегда хочется
+     перечитывать при повторных заходах). Выбор живёт в localStorage;
+     печать разворачивает всегда — на бумаге описание нужно. */
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .sec-head h2 { margin: 0; }
+  .sum-toggle { font: 500 11px var(--mono); min-height: 30px; }
+  #summary.sum-collapsed article.doc { display: none; }
+  @media print { #summary.sum-collapsed article.doc { display: block; } }
   .fx-err { border: 1px solid color-mix(in srgb, var(--red) 40%, transparent); background: color-mix(in srgb, var(--red) 8%, transparent);
     border-radius: var(--ds-radius-s); padding: 10px 12px; font-size: 13px; color: var(--text); margin: 10px 0; }
   .fx-err b { color: var(--red); }
@@ -153,9 +162,12 @@
 <main class="wrap">
 
 <section class="fx" id="summary">
-  <h2>Что случилось</h2>
+  <div class="sec-head">
+    <h2>Что случилось</h2>
+    <button class="ds-btn ds-btn--sm sum-toggle" id="sumToggle" aria-expanded="true" aria-controls="summaryBody">свернуть описание ▲</button>
+  </div>
   <p class="sub">Оспа овец и коз (SPP/GTP, род <i>Capripoxvirus</i>) вернулась в Европу с беспрецедентной силой</p>
-  <article class="doc">
+  <article class="doc" id="summaryBody">
     <p><b>2024–2026:</b> мажорная эпидемия в Греции и Болгарии, рассеивание в Румынию, Сербию и Северную Македонию. С 1 января 2024 по 29 января 2026 (данные ADIS): <b class="num">2081</b> вспышка в Греции и <b class="num">203</b> в Болгарии; всего за окно — <b class="num">2315</b> по пяти странам. Генетически почти идентичный штамм во всех странах; распространение восток→запад от границы Турции, где SGP циркулирует эндемично (сезонный пик зимой).</p>
     <p><b>Почему это важно югу России:</b> disease-free статус ЕС по каприпоксам трещит; Болгария — через Чёрное море от нас. Механика переноса (движения животных, общие пастбища, стрижка, недоотчётность) — та же, что в любом эндемичном по каприпоксам регионе (Турция, Иран, Средняя Азия, Казахстан).</p>
     <p><b>EFSA (AHAW Panel, февраль 2026)</b> оценила вакцины и смоделировала вакцинальные сценарии на данных Болгарии. Эта витрина — разбор той оценки с калькуляторами: <b>все числа ведут к первоисточнику</b>, ничего не выдумано от себя.</p>
@@ -512,6 +524,22 @@ lCov.addEventListener('input', drawLog);
 })();
 window.addEventListener('vetds-theme', drawKernel);
 window.addEventListener('resize', drawKernel);
+
+/* ---------- тоггл описания (просьба юзера: повторные заходы без простыни) ---------- */
+(function(){
+  const sec=document.getElementById('summary'), btn=document.getElementById('sumToggle');
+  if(!sec||!btn)return;
+  const KEY='capri-summary-collapsed';
+  let collapsed=false;
+  try{collapsed=localStorage.getItem(KEY)==='1'}catch(e){}
+  const apply=()=>{
+    sec.classList.toggle('sum-collapsed',collapsed);
+    btn.setAttribute('aria-expanded',String(!collapsed));
+    btn.textContent=collapsed?'показать описание ▼':'свернуть описание ▲';
+  };
+  btn.addEventListener('click',()=>{collapsed=!collapsed;try{localStorage.setItem(KEY,collapsed?'1':'0')}catch(e){}apply();});
+  apply();
+})();
 
 drawKernel(); drawFinal(); drawMatrix(); drawLog();
 </script>
